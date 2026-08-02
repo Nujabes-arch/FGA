@@ -45,6 +45,14 @@ class AttackScreenLocations @Inject constructor(
         CommandCard.Face.E -> 768
     }.let { x -> Region(x, 1060, 512, 200) + faceCardDeltaY }.xFromCenter()
 
+    fun criticalChanceRegion(card: CommandCard.Face) = when (card) {
+        CommandCard.Face.A -> -1280
+        CommandCard.Face.B -> -768
+        CommandCard.Face.C -> -256
+        CommandCard.Face.D -> 256
+        CommandCard.Face.E -> 768
+    }.let { x -> Region(x, 650, 220, 90) + faceCardDeltaY }.xFromCenter()
+
     fun servantMatchRegion(card: CommandCard.Face) = when (card) {
         CommandCard.Face.A -> -1174
         CommandCard.Face.B -> -660

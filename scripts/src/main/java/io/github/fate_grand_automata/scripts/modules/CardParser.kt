@@ -14,7 +14,8 @@ import javax.inject.Inject
 @ScriptScope
 class CardParser @Inject constructor(
     api: IFgoAutomataApi,
-    private val servantTracker: ServantTracker
+    private val servantTracker: ServantTracker,
+    private val criticalChanceDetector: CriticalChanceDetector
 ) : IFgoAutomataApi by api {
 
     private fun CommandCard.Face.affinity(): CardAffinityEnum {
@@ -65,7 +66,7 @@ class CardParser @Inject constructor(
         return CardTypeEnum.Unknown
     }
 
-    fun parse(): List<ParsedCard> {
+    fun parse(includeCriticalChance: Boolean = false): List<ParsedCard> {
         val cardsGroupedByServant = servantTracker.faceCardsGroupedByServant()
 
         val cards = CommandCard.Face.list
@@ -89,13 +90,18 @@ class CardParser @Inject constructor(
                     .firstOrNull { (_, teamSlot) -> teamSlot == servant }
                     ?.key
 
+                val criticalChance = if (includeCriticalChance && !stunned && type != CardTypeEnum.Unknown) {
+                    criticalChanceDetector.detect(it)
+                } else null
+
                 ParsedCard(
                     card = it,
                     isStunned = stunned,
                     type = type,
                     affinity = affinity,
                     servant = servant,
-                    fieldSlot = fieldSlot
+                    fieldSlot = fieldSlot,
+                    criticalChance = criticalChance
                 )
             }
 
