@@ -13,10 +13,12 @@ import io.github.fate_grand_automata.scripts.enums.MaterialEnum
 import io.github.fate_grand_automata.scripts.enums.ShuffleCardsEnum
 import io.github.fate_grand_automata.scripts.models.CardPriorityPerWave
 import io.github.fate_grand_automata.scripts.models.CardTypeSoftLimitsPerWave
+import io.github.fate_grand_automata.scripts.models.CriticalChancePriorityPerWave
 import io.github.fate_grand_automata.scripts.models.ServantPriorityPerWave
 import io.github.fate_grand_automata.scripts.models.ServantSpamConfig
 
 private const val cardTypeSoftLimitsKey = "card_type_soft_limits"
+private const val criticalChancePriorityKey = "critical_chance_priority"
 
 class BattleConfigCore(
     val id: String,
@@ -35,6 +37,11 @@ class BattleConfigCore(
         ) {
             sharedPrefs.edit { remove(cardTypeSoftLimitsKey) }
         }
+        if (sharedPrefs.contains(criticalChancePriorityKey)
+            && !isValidCriticalChancePriority(sharedPrefs.all[criticalChancePriorityKey])
+        ) {
+            sharedPrefs.edit { remove(criticalChancePriorityKey) }
+        }
     }
 
     fun import(map: Map<String, *>) {
@@ -45,6 +52,11 @@ class BattleConfigCore(
             ) {
                 remove(cardTypeSoftLimitsKey)
             }
+            if (!map.containsKey(criticalChancePriorityKey)
+                || !isValidCriticalChancePriority(map[criticalChancePriorityKey])
+            ) {
+                remove(criticalChancePriorityKey)
+            }
         }
     }
 
@@ -52,6 +64,10 @@ class BattleConfigCore(
         cardTypeSoftLimitsKey to runCatching {
             cardTypeSoftLimits.get().toString()
         }.getOrDefault(CardTypeSoftLimitsPerWave.default.toString())
+    ) + (
+        criticalChancePriorityKey to runCatching {
+            criticalChancePriority.get().toString()
+        }.getOrDefault(CriticalChancePriorityPerWave.default.toString())
     )
 
     val name = maker.string("autoskill_name", "--")
@@ -84,6 +100,18 @@ class BattleConfigCore(
                 value.toString()
         },
         default = CardTypeSoftLimitsPerWave.default
+    )
+
+    val criticalChancePriority = maker.serialized(
+        criticalChancePriorityKey,
+        serializer = object : Serializer<CriticalChancePriorityPerWave> {
+            override fun deserialize(serialized: String) =
+                CriticalChancePriorityPerWave.of(serialized)
+
+            override fun serialize(value: CriticalChancePriorityPerWave) =
+                value.toString()
+        },
+        default = CriticalChancePriorityPerWave.default
     )
 
     val rearrangeCards = maker.serialized(
@@ -226,4 +254,10 @@ class BattleConfigCore(
     val addRaidTurnDelay = maker.bool("add_raid_delay")
 
     val raidTurnDelaySeconds = maker.stringAsInt("raid_delay_seconds", 3)
+
+    private fun isValidCriticalChancePriority(value: Any?): Boolean {
+        if (value !is String) return false
+
+        return value == CriticalChancePriorityPerWave.of(value).toString()
+    }
 }

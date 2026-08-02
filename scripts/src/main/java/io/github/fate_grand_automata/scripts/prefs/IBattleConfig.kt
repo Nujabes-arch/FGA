@@ -6,6 +6,7 @@ import io.github.fate_grand_automata.scripts.enums.MaterialEnum
 import io.github.fate_grand_automata.scripts.enums.ShuffleCardsEnum
 import io.github.fate_grand_automata.scripts.models.CardPriorityPerWave
 import io.github.fate_grand_automata.scripts.models.CardTypeSoftLimitsPerWave
+import io.github.fate_grand_automata.scripts.models.CriticalChancePriorityPerWave
 import io.github.fate_grand_automata.scripts.models.ServantPriorityPerWave
 import io.github.fate_grand_automata.scripts.models.ServantSpamConfig
 
@@ -15,6 +16,7 @@ interface IBattleConfig {
     var skillCommand: String
     var cardPriority: CardPriorityPerWave
     var cardTypeSoftLimits: CardTypeSoftLimitsPerWave
+    val criticalChancePriority: CriticalChancePriorityPerWave
     val useServantPriority: Boolean
     val servantPriority: ServantPriorityPerWave
     val rearrangeCards: List<Boolean>

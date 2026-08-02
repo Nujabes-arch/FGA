@@ -29,7 +29,10 @@ class Card @Inject constructor(
 ) : IFgoAutomataApi by api {
 
     fun readCommandCards(): List<ParsedCard> = useSameSnapIn {
-        parser.parse()
+        parser.parse(
+            includeCriticalChance = battleConfig.criticalChancePriority
+                .atWave(state.stage)
+        )
     }
 
     private val spamNps: Set<CommandCard.NP>
@@ -50,6 +53,9 @@ class Card @Inject constructor(
         npUsage: NPUsage
     ): List<CommandCard.Face> {
         val cardsOrderedByPriority = priority.sort(cards, state.stage)
+        val cardsWithCriticalChance = if (battleConfig.criticalChancePriority.atWave(state.stage)) {
+            priority.applyCriticalChance(cardsOrderedByPriority)
+        } else cardsOrderedByPriority
 
         fun <T> List<T>.inCurrentWave(default: T) =
             if (isNotEmpty())
@@ -62,7 +68,7 @@ class Card @Inject constructor(
         return braveChains.pick(
             cards = cardTypeSoftLimits
                 .atWave(state.stage)
-                .apply(cardsOrderedByPriority),
+                .apply(cardsWithCriticalChance),
             npUsage = npUsage,
             braveChains = braveChainsPerWave.inCurrentWave(BraveChainEnum.None),
             rearrange = rearrangeCardsPerWave.inCurrentWave(false)

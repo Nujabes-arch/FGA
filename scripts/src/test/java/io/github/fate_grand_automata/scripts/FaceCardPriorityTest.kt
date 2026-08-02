@@ -76,4 +76,34 @@ class FaceCardPriorityTest {
 
         assertThat(sorted).containsExactly(CommandCard.Face.B, CommandCard.Face.A, CommandCard.Face.E, CommandCard.Face.C, CommandCard.Face.D)
     }
+
+    @Test
+    fun criticalChanceReordersOnlyKnownTypeSlots() {
+        val cards = listOf(
+            scathach1WB.copy(criticalChance = 20),
+            kama2Q.copy(criticalChance = 80),
+            nero3RA.copy(criticalChance = 30),
+            nero4RA.copy(criticalChance = 90),
+            scathach5WQ.copy(type = CardTypeEnum.Buster, criticalChance = 100)
+        )
+
+        val result = FaceCardPriority(CardPriorityPerWave.default, null)
+            .applyCriticalChance(cards)
+
+        assertThat(result).containsExactly(cards[4], cards[1], cards[3], cards[2], cards[0])
+    }
+
+    @Test
+    fun criticalChanceNullKeepsWholeTypeGroupStable() {
+        val cards = listOf(
+            scathach1WB.copy(criticalChance = 20),
+            scathach5WQ.copy(type = CardTypeEnum.Buster),
+            kama2Q.copy(criticalChance = 80)
+        )
+
+        val result = FaceCardPriority(CardPriorityPerWave.default, null)
+            .applyCriticalChance(cards)
+
+        assertThat(result).containsExactly(*cards.toTypedArray())
+    }
 }

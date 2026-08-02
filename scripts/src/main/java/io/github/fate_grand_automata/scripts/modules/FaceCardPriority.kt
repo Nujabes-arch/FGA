@@ -59,4 +59,24 @@ class FaceCardPriority @Inject constructor(
         servantPriority
             ?.let { applyServantPriority(cards, it, stage) }
             ?: applyCardPriority(cards, stage)
+
+    fun applyCriticalChance(cards: List<ParsedCard>): List<ParsedCard> {
+        val reordered = cards.toMutableList()
+
+        listOf(CardTypeEnum.Buster, CardTypeEnum.Arts, CardTypeEnum.Quick).forEach { type ->
+            val indices = cards.indices.filter { index ->
+                val card = cards[index]
+                card.type == type && !card.isStunned
+            }
+            val group = indices.map(cards::get)
+
+            if (group.isEmpty() || group.any { it.criticalChance == null }) return@forEach
+
+            group
+                .sortedByDescending { it.criticalChance }
+                .forEachIndexed { index, card -> reordered[indices[index]] = card }
+        }
+
+        return reordered
+    }
 }

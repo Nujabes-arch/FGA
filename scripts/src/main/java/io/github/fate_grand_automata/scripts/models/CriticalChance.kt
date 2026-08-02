@@ -3,6 +3,33 @@ package io.github.fate_grand_automata.scripts.models
 import io.github.lib_automata.Region
 import kotlin.math.abs
 
+class CriticalChancePriorityPerWave private constructor(
+    private val priorities: List<Boolean>
+) : List<Boolean> by priorities {
+    fun atWave(wave: Int) = priorities[wave.coerceIn(priorities.indices)]
+
+    override fun toString() = priorities.joinToString(",") { if (it) "T" else "F" }
+
+    companion object {
+        private const val waveCount = 3
+
+        val default get() = from(emptyList())
+
+        fun from(priorities: List<Boolean>) = CriticalChancePriorityPerWave(
+            if (priorities.size == waveCount) priorities else List(waveCount) { false }
+        )
+
+        fun of(serialized: String): CriticalChancePriorityPerWave {
+            val values = serialized.split(",")
+            if (values.size != waveCount || values.any { it != "T" && it != "F" }) {
+                return default
+            }
+
+            return from(values.map { it == "T" })
+        }
+    }
+}
+
 data class CriticalChanceMatch(
     val digit: Int,
     val region: Region,
