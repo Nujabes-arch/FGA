@@ -67,6 +67,12 @@ Skills"</string>
     <string name="card_priority_wave_number">"WAVE %d"</string>
     <string name="card_priority_high">"HIGH"</string>
     <string name="card_priority_low">"LOW"</string>
+    <string name="card_type_soft_limits">"Card Type Selection Limits"</string>
+    <string name="card_type_soft_limits_description">"Prioritize up to the selected number of Buster, Arts, or Quick cards. If other types are unavailable, overflow cards are used in their existing order."</string>
+    <string name="card_type_soft_limit_picker_title">"Select a priority limit"</string>
+    <string name="card_type_soft_limit_one">"1 card"</string>
+    <string name="card_type_soft_limit_two">"2 cards"</string>
+    <string name="card_type_soft_limit_unlimited">"Unlimited"</string>
     <string name="start_service">"Start Service"</string>
     <string name="stop_service">"Stop Service"</string>
     <string name="fine_tune_menu_reset_to_defaults">"Reset to defaults"</string>

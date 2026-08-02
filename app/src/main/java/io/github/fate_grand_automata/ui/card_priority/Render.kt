@@ -3,6 +3,7 @@ package io.github.fate_grand_automata.ui.card_priority
 import android.graphics.Color
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
@@ -21,11 +22,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.github.fate_grand_automata.R
 import io.github.fate_grand_automata.scripts.enums.BraveChainEnum
+import io.github.fate_grand_automata.scripts.models.CardTypeSoftLimit
 import io.github.fate_grand_automata.scripts.models.TeamSlot
 import io.github.fate_grand_automata.ui.FGAListItemColors
 import io.github.fate_grand_automata.ui.drag_sort.DragSort
 import io.github.fate_grand_automata.ui.drag_sort.DragSortAdapter
 import io.github.fate_grand_automata.ui.prefs.listDialog
+import io.github.fate_grand_automata.ui.prefs.Preference
 import io.github.fate_grand_automata.util.stringRes
 
 @Composable
@@ -36,6 +39,54 @@ fun CardPriorityListItem.Render(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         CardPriorityDragSort(scores)
+
+        Card(
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        ) {
+            Column(
+                modifier = Modifier.padding(bottom = 8.dp)
+            ) {
+                Text(
+                    stringResource(R.string.card_type_soft_limits),
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(16.dp, 12.dp, 16.dp, 0.dp)
+                )
+                Text(
+                    stringResource(R.string.card_type_soft_limits_description),
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+                )
+
+                var limits by cardTypeSoftLimits
+
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    CardTypeSoftLimitPicker(
+                        label = "B",
+                        selected = limits.buster,
+                        onSelectedChange = { limits = limits.copy(buster = it) },
+                        modifier = Modifier.weight(1f)
+                    )
+                    CardTypeSoftLimitPicker(
+                        label = "A",
+                        selected = limits.arts,
+                        onSelectedChange = { limits = limits.copy(arts = it) },
+                        modifier = Modifier.weight(1f)
+                    )
+                    CardTypeSoftLimitPicker(
+                        label = "Q",
+                        selected = limits.quick,
+                        onSelectedChange = { limits = limits.copy(quick = it) },
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+            }
+        }
 
         Card(
             modifier = Modifier
@@ -91,6 +142,28 @@ fun CardPriorityListItem.Render(
             )
         }
     }
+}
+
+@Composable
+private fun CardTypeSoftLimitPicker(
+    label: String,
+    selected: CardTypeSoftLimit,
+    onSelectedChange: (CardTypeSoftLimit) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val dialog = listDialog(
+        selected = selected,
+        onSelectedChange = onSelectedChange,
+        entries = CardTypeSoftLimit.entries.associateWith { stringResource(it.stringRes) },
+        title = stringResource(R.string.card_type_soft_limit_picker_title)
+    )
+
+    Preference(
+        title = label,
+        summary = stringResource(selected.stringRes),
+        onClick = { dialog.show() },
+        modifier = modifier
+    )
 }
 
 @Composable

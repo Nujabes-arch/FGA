@@ -4,6 +4,7 @@ import io.github.fate_grand_automata.R
 import io.github.fate_grand_automata.prefs.core.GameAreaMode
 import io.github.fate_grand_automata.scripts.enums.BondCEEffectEnum
 import io.github.fate_grand_automata.scripts.enums.BraveChainEnum
+import io.github.fate_grand_automata.scripts.models.CardTypeSoftLimit
 import io.github.fate_grand_automata.scripts.enums.GameServer
 import io.github.fate_grand_automata.scripts.enums.MaterialEnum
 import io.github.fate_grand_automata.scripts.enums.RefillResourceEnum
@@ -198,4 +199,11 @@ val GameServer.simpleStringRes
         GameServer.Kr -> R.string.game_server_kr
         is GameServer.En -> R.string.game_server_na
         is GameServer.Jp -> R.string.game_server_jp
+    }
+
+val CardTypeSoftLimit.stringRes
+    get() = when (this) {
+        CardTypeSoftLimit.One -> R.string.card_type_soft_limit_one
+        CardTypeSoftLimit.Two -> R.string.card_type_soft_limit_two
+        CardTypeSoftLimit.Unlimited -> R.string.card_type_soft_limit_unlimited
     }
