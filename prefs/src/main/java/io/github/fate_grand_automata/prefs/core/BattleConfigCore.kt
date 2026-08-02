@@ -40,8 +40,8 @@ class BattleConfigCore(
     fun import(map: Map<String, *>) {
         sharedPrefs.edit {
             import(map)
-            if (map.containsKey(cardTypeSoftLimitsKey)
-                && map[cardTypeSoftLimitsKey] !is String
+            if (!map.containsKey(cardTypeSoftLimitsKey)
+                || map[cardTypeSoftLimitsKey] !is String
             ) {
                 remove(cardTypeSoftLimitsKey)
             }
