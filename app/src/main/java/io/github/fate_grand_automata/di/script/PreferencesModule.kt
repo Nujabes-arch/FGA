@@ -5,6 +5,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import io.github.fate_grand_automata.scripts.models.AutoSkillCommand
 import io.github.fate_grand_automata.scripts.models.CardPriorityPerWave
+import io.github.fate_grand_automata.scripts.models.CardTypeSoftLimitsPerWave
 import io.github.fate_grand_automata.scripts.models.ServantPriorityPerWave
 import io.github.fate_grand_automata.scripts.models.SpamConfigPerTeamSlot
 import io.github.fate_grand_automata.scripts.prefs.IBattleConfig
@@ -45,6 +46,11 @@ class PreferencesModule {
     @Provides
     fun provideCardPriority(battleConfig: IBattleConfig): CardPriorityPerWave =
         battleConfig.cardPriority
+
+    @ScriptScope
+    @Provides
+    fun provideCardTypeSoftLimits(battleConfig: IBattleConfig): CardTypeSoftLimitsPerWave =
+        battleConfig.cardTypeSoftLimits
 
     @ScriptScope
     @Provides

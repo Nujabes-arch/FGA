@@ -12,8 +12,11 @@ import io.github.fate_grand_automata.scripts.enums.GameServer
 import io.github.fate_grand_automata.scripts.enums.MaterialEnum
 import io.github.fate_grand_automata.scripts.enums.ShuffleCardsEnum
 import io.github.fate_grand_automata.scripts.models.CardPriorityPerWave
+import io.github.fate_grand_automata.scripts.models.CardTypeSoftLimitsPerWave
 import io.github.fate_grand_automata.scripts.models.ServantPriorityPerWave
 import io.github.fate_grand_automata.scripts.models.ServantSpamConfig
+
+private const val cardTypeSoftLimitsKey = "card_type_soft_limits"
 
 class BattleConfigCore(
     val id: String,
@@ -26,12 +29,30 @@ class BattleConfigCore(
 
     private val maker = PrefMaker(sharedPrefs)
 
-    fun import(map: Map<String, *>) =
+    init {
+        if (sharedPrefs.contains(cardTypeSoftLimitsKey)
+            && sharedPrefs.all[cardTypeSoftLimitsKey] !is String
+        ) {
+            sharedPrefs.edit { remove(cardTypeSoftLimitsKey) }
+        }
+    }
+
+    fun import(map: Map<String, *>) {
         sharedPrefs.edit {
             import(map)
+            if (map.containsKey(cardTypeSoftLimitsKey)
+                && map[cardTypeSoftLimitsKey] !is String
+            ) {
+                remove(cardTypeSoftLimitsKey)
+            }
         }
+    }
 
-    fun export(): Map<String, *> = sharedPrefs.all
+    fun export(): Map<String, *> = sharedPrefs.all + (
+        cardTypeSoftLimitsKey to runCatching {
+            cardTypeSoftLimits.get().toString()
+        }.getOrDefault(CardTypeSoftLimitsPerWave.default.toString())
+    )
 
     val name = maker.string("autoskill_name", "--")
     val skillCommand = maker.string("autoskill_cmd")
@@ -47,6 +68,22 @@ class BattleConfigCore(
                 value.toString()
         },
         default = CardPriorityPerWave.default
+    )
+
+    val cardTypeSoftLimits = maker.serialized(
+        cardTypeSoftLimitsKey,
+        serializer = object : Serializer<CardTypeSoftLimitsPerWave> {
+            override fun deserialize(serialized: String) =
+                try {
+                    CardTypeSoftLimitsPerWave.of(serialized)
+                } catch (_: Exception) {
+                    CardTypeSoftLimitsPerWave.default
+                }
+
+            override fun serialize(value: CardTypeSoftLimitsPerWave) =
+                value.toString()
+        },
+        default = CardTypeSoftLimitsPerWave.default
     )
 
     val rearrangeCards = maker.serialized(

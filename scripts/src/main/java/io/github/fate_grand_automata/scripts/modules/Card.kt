@@ -4,6 +4,7 @@ import io.github.fate_grand_automata.scripts.IFgoAutomataApi
 import io.github.fate_grand_automata.scripts.ScriptLog
 import io.github.fate_grand_automata.scripts.enums.BraveChainEnum
 import io.github.fate_grand_automata.scripts.models.CommandCard
+import io.github.fate_grand_automata.scripts.models.CardTypeSoftLimitsPerWave
 import io.github.fate_grand_automata.scripts.models.FieldSlot
 import io.github.fate_grand_automata.scripts.models.NPUsage
 import io.github.fate_grand_automata.scripts.models.ParsedCard
@@ -22,6 +23,7 @@ class Card @Inject constructor(
     private val caster: Caster,
     private val parser: CardParser,
     private val priority: FaceCardPriority,
+    private val cardTypeSoftLimits: CardTypeSoftLimitsPerWave,
     private val braveChains: ApplyBraveChains,
     private val battleConfig: IBattleConfig
 ) : IFgoAutomataApi by api {
@@ -58,7 +60,9 @@ class Card @Inject constructor(
         val rearrangeCardsPerWave = battleConfig.rearrangeCards
 
         return braveChains.pick(
-            cards = cardsOrderedByPriority,
+            cards = cardTypeSoftLimits
+                .atWave(state.stage)
+                .apply(cardsOrderedByPriority),
             npUsage = npUsage,
             braveChains = braveChainsPerWave.inCurrentWave(BraveChainEnum.None),
             rearrange = rearrangeCardsPerWave.inCurrentWave(false)
