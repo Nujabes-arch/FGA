@@ -109,6 +109,7 @@ fun CardPriorityWaveSelector(
                                         items[0].scores.toMutableList(),
                                         items[0].servantPriority.toMutableList(),
                                         mutableStateOf(items[0].cardTypeSoftLimits.value),
+                                        mutableStateOf(items[0].criticalChancePriority.value),
                                         mutableStateOf(false),
                                         mutableStateOf(BraveChainEnum.None)
                                     )

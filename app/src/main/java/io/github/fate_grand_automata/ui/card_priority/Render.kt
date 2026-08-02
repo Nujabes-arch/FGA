@@ -85,6 +85,25 @@ fun CardPriorityListItem.Render(
                         modifier = Modifier.weight(1f)
                     )
                 }
+
+                var criticalChance by criticalChancePriority
+
+                ListItem(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { criticalChance = !criticalChance },
+                    headlineContent = { Text(stringResource(R.string.critical_chance_priority)) },
+                    supportingContent = {
+                        Text(stringResource(R.string.critical_chance_priority_description))
+                    },
+                    trailingContent = {
+                        Checkbox(
+                            checked = criticalChance,
+                            onCheckedChange = { criticalChance = it }
+                        )
+                    },
+                    colors = FGAListItemColors()
+                )
             }
         }
 

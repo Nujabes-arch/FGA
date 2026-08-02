@@ -71,6 +71,8 @@
     <string name="card_type_soft_limit_one">"1장"</string>
     <string name="card_type_soft_limit_two">"2장"</string>
     <string name="card_type_soft_limit_unlimited">"제한 없음"</string>
+    <string name="critical_chance_priority">"크리티컬 확률 우선순위"</string>
+    <string name="critical_chance_priority_description">"각 카드 타입 안에서 화면에 표시된 크리티컬 확률이 높은 카드를 먼저 선택합니다. 확률이 공란이면 0으로 처리하며, 한 장이라도 인식할 수 없으면 해당 타입은 기존 순서를 유지합니다."</string>
     <string name="start_service">"서비스 시작"</string>
     <string name="stop_service">"서비스 중지"</string>
     <string name="fine_tune_menu_reset_to_defaults">"기본값으로 리셋"</string>

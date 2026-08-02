@@ -11,6 +11,7 @@ import io.github.fate_grand_automata.scripts.enums.BraveChainEnum
 import io.github.fate_grand_automata.scripts.models.CardPriority
 import io.github.fate_grand_automata.scripts.models.CardPriorityPerWave
 import io.github.fate_grand_automata.scripts.models.CardTypeSoftLimitsPerWave
+import io.github.fate_grand_automata.scripts.models.CriticalChancePriorityPerWave
 import io.github.fate_grand_automata.scripts.models.ServantPriorityPerWave
 import javax.inject.Inject
 
@@ -22,6 +23,7 @@ class CardPriorityViewModel @Inject constructor(
     val cardPriorityItems: SnapshotStateList<CardPriorityListItem> by lazy {
         val cardPriority = battleConfig.cardPriority.get()
         val cardTypeSoftLimits = battleConfig.cardTypeSoftLimits.get()
+        val criticalChancePriority = battleConfig.criticalChancePriority.get()
         val servantPriority = battleConfig.servantPriority.get()
 
         val rearrangeCards = battleConfig.rearrangeCards.get()
@@ -36,6 +38,7 @@ class CardPriorityViewModel @Inject constructor(
                     it.value,
                     servantPriority.atWave(it.index).toMutableList(),
                     mutableStateOf(cardTypeSoftLimits.atWave(it.index)),
+                    mutableStateOf(criticalChancePriority.atWave(it.index)),
                     mutableStateOf(rearrangeCards.getOrElse(it.index) { false }),
                     mutableStateOf(braveChains.getOrElse(it.index) { BraveChainEnum.None })
                 )
@@ -55,6 +58,12 @@ class CardPriorityViewModel @Inject constructor(
         battleConfig.cardTypeSoftLimits.set(
             CardTypeSoftLimitsPerWave.from(
                 cardPriorityItems.map { it.cardTypeSoftLimits.value }
+            )
+        )
+
+        battleConfig.criticalChancePriority.set(
+            CriticalChancePriorityPerWave.from(
+                cardPriorityItems.map { it.criticalChancePriority.value }
             )
         )
 

@@ -10,6 +10,7 @@ data class CardPriorityListItem(
     val scores: MutableList<CardScore>,
     val servantPriority: MutableList<TeamSlot>,
     var cardTypeSoftLimits: MutableState<CardTypeSoftLimits>,
+    var criticalChancePriority: MutableState<Boolean>,
     var rearrangeCards: MutableState<Boolean>,
     var braveChains: MutableState<BraveChainEnum>
 )

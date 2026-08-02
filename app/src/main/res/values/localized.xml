@@ -73,6 +73,8 @@ Skills"</string>
     <string name="card_type_soft_limit_one">"1 card"</string>
     <string name="card_type_soft_limit_two">"2 cards"</string>
     <string name="card_type_soft_limit_unlimited">"Unlimited"</string>
+    <string name="critical_chance_priority">"Critical Chance Priority"</string>
+    <string name="critical_chance_priority_description">"Within each card type, prioritize cards by their displayed critical chance. A blank chance is 0; if any card cannot be recognized, that type keeps its existing order."</string>
     <string name="start_service">"Start Service"</string>
     <string name="stop_service">"Stop Service"</string>
     <string name="fine_tune_menu_reset_to_defaults">"Reset to defaults"</string>
