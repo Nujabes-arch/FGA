@@ -43,8 +43,8 @@ data class CriticalChanceMatch(
 /**
  * Classifies the fixed FGO critical-chance number format without OCR.
  *
- * A blank digit band is represented by an empty match list and means 0. Any
- * low-confidence or malformed non-blank result is rejected as unknown.
+ * A confirmed blank digit band means 0. Any low-confidence or malformed
+ * non-blank result is rejected as unknown.
  */
 object CriticalChanceClassifier {
     const val searchThreshold = 0.55
@@ -56,10 +56,11 @@ object CriticalChanceClassifier {
 
     fun classify(
         matches: List<CriticalChanceMatch>,
-        regionValid: Boolean = true
+        regionValid: Boolean = true,
+        blankDigitBand: Boolean = matches.isEmpty()
     ): Int? {
         if (!regionValid) return null
-        if (matches.isEmpty()) return 0
+        if (matches.isEmpty()) return if (blankDigitBand) 0 else null
 
         val candidates = matches
             .asSequence()

@@ -12,6 +12,10 @@ import javax.inject.Inject
 class CriticalChanceDetector @Inject constructor(
     api: IFgoAutomataApi
 ) : IFgoAutomataApi by api {
+    private companion object {
+        const val blankDigitThreshold = 0.85
+    }
+
     private val digitImages = listOf(
         0 to Images.CriticalDigit0,
         1 to Images.CriticalDigit1,
@@ -30,6 +34,7 @@ class CriticalChanceDetector @Inject constructor(
         if (region !in locations.scriptArea) return null
 
         return region.getPattern().use { pattern ->
+            val blankDigitBand = pattern.threshold(blankDigitThreshold).use { it.isBlack() }
             val matches = digitImages.flatMap { (digit, image) ->
                 pattern.findMatches(images[image], CriticalChanceClassifier.searchThreshold)
                     .map { match ->
@@ -42,7 +47,7 @@ class CriticalChanceDetector @Inject constructor(
                     .toList()
             }
 
-            CriticalChanceClassifier.classify(matches)
+            CriticalChanceClassifier.classify(matches, blankDigitBand = blankDigitBand)
         }
     }
 }

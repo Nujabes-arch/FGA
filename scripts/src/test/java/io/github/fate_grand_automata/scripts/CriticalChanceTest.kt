@@ -44,6 +44,9 @@ class CriticalChanceTest {
         assertThat(
             CriticalChanceClassifier.classify(classifiedMatches(50), regionValid = false)
         ).isEqualTo(null)
+        assertThat(
+            CriticalChanceClassifier.classify(emptyList(), blankDigitBand = false)
+        ).isEqualTo(null)
     }
 
     private fun classify(value: Int): Int? =
