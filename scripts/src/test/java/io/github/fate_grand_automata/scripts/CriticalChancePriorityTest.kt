@@ -25,6 +25,10 @@ class CriticalChancePriorityTest {
         }
 
         assertThat(CriticalChancePriorityPerWave.from(listOf(true)).toList())
-            .containsExactly(false, false, false)
+            .containsExactly(true, false, false)
+        assertThat(CriticalChancePriorityPerWave.from(listOf(true, false)).toList())
+            .containsExactly(true, false, false)
+        assertThat(CriticalChancePriorityPerWave.from(listOf(true, false, true)).toList())
+            .containsExactly(true, false, true)
     }
 }

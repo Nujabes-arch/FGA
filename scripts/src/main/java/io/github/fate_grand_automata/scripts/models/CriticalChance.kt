@@ -16,7 +16,9 @@ class CriticalChancePriorityPerWave private constructor(
         val default get() = from(emptyList())
 
         fun from(priorities: List<Boolean>) = CriticalChancePriorityPerWave(
-            if (priorities.size == waveCount) priorities else List(waveCount) { false }
+            priorities
+                .take(waveCount)
+                .let { it + List(waveCount - it.size) { false } }
         )
 
         fun of(serialized: String): CriticalChancePriorityPerWave {
@@ -76,30 +78,11 @@ object CriticalChanceClassifier {
 
         if (candidates.isEmpty()) return null
 
-        val sequences = mutableListOf<List<CriticalChanceMatch>>()
-
-        for (first in candidates.indices) {
-            for (second in first + 1 until candidates.size) {
-                val pair = listOf(candidates[first], candidates[second])
-                if (isTwoDigitSequence(pair)) {
-                    sequences += pair
-                }
-
-                for (third in second + 1 until candidates.size) {
-                    val triple = listOf(candidates[first], candidates[second], candidates[third])
-                    if (isThreeDigitSequence(triple)) {
-                        sequences += triple
-                    }
-                }
-            }
+        return when {
+            isThreeDigitSequence(candidates) -> 100
+            isTwoDigitSequence(candidates) -> candidates.first().digit * 10
+            else -> null
         }
-
-        return sequences
-            .maxWithOrNull(compareBy<List<CriticalChanceMatch>> { it.size }
-                .thenBy { it.sumOf(CriticalChanceMatch::score) })
-            ?.let { sequence ->
-                if (sequence.size == 3) 100 else sequence.first().digit * 10
-            }
     }
 
     private fun overlaps(

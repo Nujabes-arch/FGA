@@ -47,6 +47,13 @@ class CriticalChanceTest {
         assertThat(
             CriticalChanceClassifier.classify(emptyList(), blankDigitBand = false)
         ).isEqualTo(null)
+        listOf(
+            candidateMatches(5, 0, 8),
+            candidateMatches(1, 0, 0, 7),
+            candidateMatches(9, 1, 0)
+        ).forEach { candidates ->
+            assertThat(CriticalChanceClassifier.classify(candidates)).isEqualTo(null)
+        }
     }
 
     private fun classify(value: Int): Int? =
@@ -54,6 +61,10 @@ class CriticalChanceTest {
 
     private fun classifiedMatches(value: Int): List<CriticalChanceMatch> {
         val digits = if (value == 100) listOf(1, 0, 0) else listOf(value / 10, 0)
+        return candidateMatches(*digits.toIntArray())
+    }
+
+    private fun candidateMatches(vararg digits: Int): List<CriticalChanceMatch> {
         var x = 0
 
         return digits.map { digit ->
